@@ -1670,6 +1670,7 @@ static void *janus_sip_handler(void *data) {
 			if(error_code != 0)
 				goto error;
 			json_t *uri = json_object_get(root, "uri");
+                        json_t *from = json_object_get(root, "from");
 			/* Check if we need to ACK manually (e.g., for the Record-Route hack) */
 			json_t *autoack = json_object_get(root, "autoack");
 			gboolean do_autoack = autoack ? json_is_true(autoack) : TRUE;
@@ -1720,6 +1721,7 @@ static void *janus_sip_handler(void *data) {
 			}
 			/* Parse address */
 			const char *uri_text = json_string_value(uri);
+			const char *from_text = json_string_value(from);
 			janus_sip_uri_t target_uri;
 			if (janus_sip_parse_uri(&target_uri, uri_text) < 0) {
 				JANUS_LOG(LOG_ERR, "Invalid user address %s\n", uri_text);
@@ -1790,11 +1792,7 @@ static void *janus_sip_handler(void *data) {
 			JANUS_LOG(LOG_VERB, "Prepared SDP for INVITE:\n%s", sdp);
 			/* Prepare the From header */
 			char from_hdr[1024];
-			if (session->account.display_name) {
-				g_snprintf(from_hdr, sizeof(from_hdr), "\"%s\" <%s>", session->account.display_name, session->account.identity);
-			} else {
-				g_snprintf(from_hdr, sizeof(from_hdr), "%s", session->account.identity);
-			}
+			g_snprintf(from_hdr, sizeof(from_hdr), "%s", from_text);
 			/* Prepare the stack */
 			if(session->stack->s_nh_i != NULL)
 				nua_handle_destroy(session->stack->s_nh_i);
