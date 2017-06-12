@@ -3369,7 +3369,7 @@ static void *janus_sip_relay_thread(void *data) {
 			break;
 		int i = 0;
 		for(i=0; i<num; i++) {
-			if(fds[i].revents & (POLLERR | POLLHUP)) {
+			if(fds[i].revents & (POLLHUP)) {
 				/* Socket error? */
 				JANUS_LOG(LOG_ERR, "[SIP-%s] Error polling: %s...\n", session->account.username,
 					fds[i].revents & POLLERR ? "POLLERR" : "POLLHUP");
