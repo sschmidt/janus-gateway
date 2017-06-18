@@ -1818,7 +1818,7 @@ static void *janus_sipre_handler(void *data) {
 			/* Prepare the From header */
 			char from_hdr[1024];
 			if(session->account.display_name) {
-				g_snprintf(from_hdr, sizeof(from_hdr), "\"%s\" <%s>", session->account.display_name, session->account.identity);
+				g_snprintf(from_hdr, sizeof(from_hdr), "%s", session->account.display_name);
 			} else {
 				g_snprintf(from_hdr, sizeof(from_hdr), "%s", session->account.identity);
 			}
@@ -2869,7 +2869,7 @@ static void *janus_sipre_relay_thread(void *data) {
 			break;
 		int i = 0;
 		for(i=0; i<num; i++) {
-			if(fds[i].revents & (POLLERR | POLLHUP)) {
+			if(fds[i].revents & POLLHUP) {
 				/* Socket error? */
 				JANUS_LOG(LOG_ERR, "[SIPre-%s] Error polling: %s...\n", session->account.username,
 					fds[i].revents & POLLERR ? "POLLERR" : "POLLHUP");
